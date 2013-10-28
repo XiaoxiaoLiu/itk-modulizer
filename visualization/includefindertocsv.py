@@ -33,23 +33,12 @@ import sys
 import os.path
 import re
 
-if len(sys.argv) != 2:
-    print("USAGE:  {0} [monolithic ITK PATH] [modular ITK PATH]".format(sys.argv[0]))
-    sys.exit(-1)
-
-
-HeadOfITKTree = sys.argv[1];
-if (HeadOfITKTree[-1] == '/'):
-    HeadOfITKTree = HeadOfITKTree[0:-1]
-
-
-testFiles = glob.glob(HeadOfITKTree+'/Testing/Code/*/*.cxx')
 
 includesTable =  open('./itkIncludes.csv','w')
 missingEntries =  open('./missingIncludes.log','w')
 print('created ./itkIncludes.cvs and ./missingIncludes.log')
 
-manifestfile = open(HeadOfITKTree+"/Modularization/Manifest.txt",'r')
+manifestfile = open("Manifest.txt",'r')
 manifestlines = manifestfile.readlines()
 
 moduletable = {'classname':'modulename'}
@@ -61,7 +50,7 @@ for line in manifestlines:
     group = words[1]
     module = words[2]
     destinationSubdir = words[3]
-    if destinationSubdir == 'src':
+    if destinationSubdir == 'src' or destinationSubdir =='include':
       basepath, basefilename = os.path.split(inputfile)
       basename, extension = os.path.splitext(basefilename)
       moduletable[basename] = module
@@ -73,12 +62,12 @@ for line in manifestlines:
     group = words[1]
     module = words[2]
     destinationSubdir = words[3]
-    if destinationSubdir == 'src':
+    if destinationSubdir == 'src' or destinationSubdir == 'include':
       basepath, basefilename = os.path.split(inputfile)
       basename, extension = os.path.splitext(basefilename)
   #    includesTable.write('<class id="'+basename+'" module="'+module+'">\n')
       basemodule = moduletable.get(basename,'not-found')
-      fullinputfile = HeadOfITKTree+'/'+inputfile
+      fullinputfile = inputfile
       for codeline in open(fullinputfile,'r'):
         if codeline.find("#include") != -1:
           searchresult = re.search('itk.*\.h',codeline)

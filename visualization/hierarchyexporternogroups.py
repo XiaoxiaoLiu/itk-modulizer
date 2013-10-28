@@ -19,8 +19,7 @@
 #==========================================================================*/
 # This script is used to generate two XML files that organize the hierarchy
 # of groups, modules and classes.
-#
-# To run it, type ./modulefinder.py   ITK_SOURCE_TREE
+# 
 #
 # from the directory where the Manifest.txt file is.
 # an output file called itkModules.xml will be generated.
@@ -31,22 +30,11 @@ import sys
 import os.path
 import re
 
-if len(sys.argv) != 2:
-    print("USAGE:  {0} [monolithic ITK PATH]".format(sys.argv[0]))
-    sys.exit(-1)
-
-
-HeadOfITKTree = sys.argv[1];
-if (HeadOfITKTree[-1] == '/'):
-    HeadOfITKTree = HeadOfITKTree[0:-1]
-
-testFiles = glob.glob(HeadOfITKTree+'/Testing/Code/*/*.cxx')
-
 modulesTable =  open('./itkModulesNoGroups.xml','w')
 missingEntries =  open('./missingIncludes.log','w')
 print('create ./itkModulesNoGroups.xml and ./missingIncludes.log')
 
-manifestfile = open(HeadOfITKTree+"/Modularization/Manifest.txt",'r')
+manifestfile = open("Manifest.txt",'r')
 manifestlines = manifestfile.readlines()
 
 classmoduletable = {'classname':'modulename'}
@@ -66,7 +54,7 @@ for line in manifestlines:
     group = words[1]
     module = words[2]
     destinationSubdir = words[3]
-    if destinationSubdir == 'src':
+    if destinationSubdir == 'src' or destinationSubdir == 'include':
       basepath, basefilename = os.path.split(inputfile)
       basename, extension = os.path.splitext(basefilename)
       classmoduletable[basename] = module

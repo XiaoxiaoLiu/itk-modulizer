@@ -42,13 +42,11 @@ HeadOfITKTree = sys.argv[1];
 if (HeadOfITKTree[-1] == '/'):
     HeadOfITKTree = HeadOfITKTree[0:-1]
 
-testFiles = glob.glob(HeadOfITKTree+'/Testing/Code/*/*.cxx')
-
 includesTable =  open('./itkIncludes.xml','w')
 missingEntries =  open('./missingIncludes.log','w')
 print('created ./itkIncludes.xml   and    ./missingIncludes.log' )
 
-manifestfile = open("../Manifest.txt",'r')
+manifestfile = open("Manifest.txt",'r')
 manifestlines = manifestfile.readlines()
 
 moduletable = {'classname':'modulename'}
@@ -59,7 +57,7 @@ for line in manifestlines:
   group = words[1]
   module = words[2]
   destinationSubdir = words[3]
-  if destinationSubdir == 'Source':
+  if destinationSubdir == 'src' or destinationSubdir ==  'include':
     basepath, basefilename = os.path.split(inputfile)
     basename, extension = os.path.splitext(basefilename)
     moduletable[basename] = module
@@ -70,11 +68,11 @@ for line in manifestlines:
   group = words[1]
   module = words[2]
   destinationSubdir = words[3]
-  if destinationSubdir == 'Source':
+  if destinationSubdir == 'src' or destinationSubdir == 'include':
     basepath, basefilename = os.path.split(inputfile)
     basename, extension = os.path.splitext(basefilename)
     includesTable.write('<class id="'+basename+'" module="'+module+'">\n')
-    fullinputfile = HeadOfITKTree+'/'+inputfile
+    fullinputfile = inputfile
     for codeline in open(fullinputfile,'r'):
       if codeline.find("#include") != -1:
         searchresult = re.search('itk.*\.h',codeline)
