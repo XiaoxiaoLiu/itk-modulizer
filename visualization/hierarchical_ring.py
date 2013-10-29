@@ -53,6 +53,8 @@ view.SetShrinkPercentage(0.3)
 #ct.SetLeafSpacing(0.5)
 #ct.SetLogSpacingValue(0.3)
 
+
+
 #theme = vtkViewTheme.CreateMellowTheme()
 theme = vtkViewTheme()
 theme.SetLineWidth(1)
@@ -67,5 +69,29 @@ view.GetRenderWindow().LineSmoothingOn()
 view.GetRenderWindow().SetMultiSamples(4)
 view.ResetCamera()
 
+view.GetRenderWindow().Render()
+
+# screenshot code:
+w2if = vtk.vtkWindowToImageFilter()
+w2if.SetInput(view.GetRenderWindow())
+w2if.Update()
+
+writer = vtk.vtkPNGWriter()
+writer.SetFileName("ITK_Moduled_Dependency.png")
+writer.SetInputConnection(w2if.GetOutputPort())
+writer.Write()
+
+#NOT WORKING: save a screen shot to vector image
+#exp = vtkGL2PSExporter()
+#exp.SetRenderWindow(view.GetRenderWindow())
+#exp.DrawBackgroundOn()
+#exp.SetFilePrefix("moduleDepedency")
+#exp.SetFileFormatToPDF()
+#exp.Write()
+
 view.GetInteractor().Initialize()
 view.GetInteractor().Start()
+
+
+
+
